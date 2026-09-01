@@ -23,6 +23,16 @@ Each file has three sections: `## Instructions`, `## Practice`, `## Feedback cri
 `https://raw.githubusercontent.com/ch-bu/frontier-ai-academy-poc/main/templates/{state}-template.html`,
 where `{state}` is `instructions`, `practice`, or `feedback`.
 
+**If a `raw.githubusercontent.com` fetch fails or times out** (this domain is
+occasionally unreachable for automated fetches, independent of whether the file
+exists): retry once. If it still fails, fetch the same path from
+`https://cdn.jsdelivr.net/gh/ch-bu/frontier-ai-academy-poc@main/{path}` instead — same
+path, same file, just a different, more reliable CDN mirror of this repo. Use this
+mirror only as a fallback, not as the default: it can lag up to ~12 hours behind a
+fresh commit, so using `raw.githubusercontent.com` first is what keeps a merged content
+PR visible immediately with no separate publish step. Don't tell the learner about
+retries or which mirror was used — just get the content and move on.
+
 ## What to do in a conversation
 
 1. When a learner starts, greet them briefly and ask which lesson they want (list the
@@ -50,8 +60,8 @@ where `{state}` is `instructions`, `practice`, or `feedback`.
    and checklist state to that learner's own browser (`localStorage`), scoped per
    lesson and language. Your only job is to fetch and render; you never see or persist
    what they typed into the practice box.
-8. If a fetch fails (file renamed, network issue), say so plainly and offer to retry —
-   don't invent lesson content from memory.
+8. If a fetch still fails after the retry-and-mirror-fallback steps above, say so
+   plainly and offer to retry — don't invent lesson content from memory.
 
 ## Out of scope for this POC
 
