@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Academy Lesson POC</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: #faf9f7; color: #1f1d1a; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 56px 24px 64px; }
+  .tag { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #8a8172; }
+  h1 { font-size: 28px; margin: 10px 0 8px; }
+  p { line-height: 1.6; }
+  .lessons { list-style: none; padding: 0; margin: 24px 0; }
+  .lessons li { padding: 14px 16px; border: 1px solid #e3ddce; border-radius: 10px; margin-bottom: 10px; }
+  .lessons li b { display: block; margin-bottom: 2px; }
+  .cta { display: inline-block; margin-top: 20px; padding: 12px 20px; border-radius: 8px; background: #1f1d1a;
+         color: #faf9f7; text-decoration: none; font-weight: 600; }
+  .note { margin-top: 28px; font-size: 13px; color: #8a8172; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1b1a17; color: #eee9df; }
+    .lessons li { border-color: #3a3626; }
+    .cta { background: #eee9df; color: #1b1a17; }
+    .tag, .note { color: #9a9280; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="tag">Internal proof of concept</div>
+    <h1>Academy Lesson POC</h1>
+    <p>
+      Two short lessons on effective prompting, delivered entirely inside a shared
+      Claude Project — instructions, practice, and feedback in one conversation,
+      available in German or English.
+    </p>
+    <ul class="lessons">
+      <li><b>Clear, Specific Instructions</b>Turning a vague prompt into a specific one.</li>
+      <li><b>Giving Claude Context and Examples</b>Adding background and a sample answer to a prompt.</li>
+    </ul>
+    <a class="cta" href="https://claude.ai/project/REPLACE-WITH-PROJECT-SHARE-LINK">
+      Open the lesson in Claude &rarr;
+    </a>
+    <p class="note">
+      This page only links to the Claude Project — the lesson itself runs there, not
+      here. Replace the link above with your Project's share link after setup (see
+      <code>README.md</code>).
+    </p>
+  </div>
+</body>
+</html>
