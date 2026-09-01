@@ -69,6 +69,9 @@ Open the Pages front door, click into the Project, and check:
 - [ ] Each template's "Your progress" strip shows completed/in-progress state for
       Instructions, Practice, and Feedback, and updates live as you interact.
 - [ ] The two lessons can be started independently — no forced order.
+- [ ] Language preference is remembered and shown per template (`poc-academy-language`)
+      — but confirm this is *display only*: a brand-new conversation still asks which
+      language you want, since Claude can't read localStorage.
 
 ## Known gaps / not tested here
 

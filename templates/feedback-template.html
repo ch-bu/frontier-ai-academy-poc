@@ -84,8 +84,11 @@
             pill('Instructions' + (viewed ? ' ✓' : ''), viewed) +
             pill('Practice' + (practiceDone ? ' ✓' : hasAnswer ? ' (draft saved)' : ''), practiceDone || hasAnswer) +
             pill('Feedback ' + feedbackLabel, checked > 0) +
+            pill('Language: {{LANGUAGE}} (remembered)', true) +
           '</div>';
       }
+
+      write('poc-academy-language', '{{LANGUAGE}}');
 
       items.forEach(function (text, i) {
         var row = document.createElement('label');

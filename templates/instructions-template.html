@@ -55,6 +55,7 @@
       }
 
       write(ns + '-viewed', 'true');
+      write('poc-academy-language', '{{LANGUAGE}}');
 
       var practiceDone = read(ns + '-done') === 'true';
       var practiceAnswer = read(ns + '-answer');
@@ -75,6 +76,7 @@
           pill('Instructions ✓', true) +
           pill('Practice' + (practiceDone ? ' ✓' : hasAnswer ? ' (draft saved)' : ''), practiceDone || hasAnswer) +
           pill('Feedback ' + feedbackLabel, feedbackLabel !== 'not started') +
+          pill('Language: {{LANGUAGE}} (remembered)', true) +
         '</div>';
     })();
   </script>

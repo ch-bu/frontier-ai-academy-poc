@@ -89,9 +89,11 @@
             pill('Instructions' + (viewed ? ' ✓' : ''), viewed) +
             pill('Practice' + (practiceDone ? ' ✓' : hasAnswer ? ' (draft saved)' : ''), practiceDone || hasAnswer) +
             pill('Feedback ' + feedbackLabel, feedbackLabel !== 'not started') +
+            pill('Language: {{LANGUAGE}} (remembered)', true) +
           '</div>';
       }
 
+      write('poc-academy-language', '{{LANGUAGE}}');
       answer.value = read(answerKey) || '';
       done.checked = read(doneKey) === 'true';
       renderProgress();

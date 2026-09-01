@@ -26,7 +26,18 @@ All three templates read and write `localStorage` only, under keys namespaced by
 - `feedback-template.html` saves `...-feedback` (a JSON map of which self-check items
   are ticked).
 
-Each template also renders a small "Your progress" strip built from those same three
-keys, so the learner can see — inside the artifact itself — that their instructions,
-practice, and feedback state is being kept, without needing to open browser developer
+All three also write a single global key, `poc-academy-language`, set to whichever
+`{{LANGUAGE}}` they were rendered with — one shared preference across both lessons,
+rather than per-lesson.
+
+**Limitation:** Claude cannot read `localStorage` — it only exists in the learner's
+browser, invisible to the model — so `poc-academy-language` cannot make Claude skip
+asking a learner their language preference in a new conversation. It only lets a
+template default/confirm its own language display if it were ever re-rendered without
+Claude repopulating it. This is a constraint of the shared-Claude-Project architecture,
+not something fixable at the template level.
+
+Each template also renders a small "Your progress" strip built from these keys, so the
+learner can see — inside the artifact itself — that their instructions, practice,
+feedback, and language state is being kept, without needing to open browser developer
 tools.
