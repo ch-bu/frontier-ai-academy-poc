@@ -24,7 +24,9 @@ Mapped to ADR-0006's decision points:
    learning-journey state (instructions / practice / feedback), populated live from this
    repo's current content each time.
 5. **State and privacy** — any learner progress persists only in the artifact's own
-   browser localStorage, never sent anywhere.
+   browser localStorage, never sent anywhere, *and* is visible to the learner inside the
+   artifact itself (a "Your progress" strip on every template), not only via browser
+   developer tools.
 6. **Bilingual delivery** — one Project, not two. Language is a conversational
    preference; Claude picks the matching DE/EN source file.
 
@@ -64,6 +66,8 @@ Open the Pages front door, click into the Project, and check:
       with no redeploy step.
 - [ ] Practice answers/progress survive a page reload (localStorage) but are not visible
       to Claude or anywhere server-side on a fresh conversation.
+- [ ] Each template's "Your progress" strip shows completed/in-progress state for
+      Instructions, Practice, and Feedback, and updates live as you interact.
 - [ ] The two lessons can be started independently — no forced order.
 
 ## Known gaps / not tested here

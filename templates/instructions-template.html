@@ -13,12 +13,20 @@
   .body p { line-height: 1.55; margin: 0 0 14px; }
   .body ul { line-height: 1.55; margin: 0 0 14px; padding-left: 20px; }
   .body blockquote { margin: 0 0 14px; padding: 10px 14px; background: #f1ede3; border-left: 3px solid #cbbf9c; border-radius: 4px; }
-  .footer { margin-top: 28px; font-size: 13px; color: #8a8172; }
+  .progress { margin-top: 24px; padding: 12px 14px; border: 1px solid #e3ddce; border-radius: 8px; }
+  .progress-label { font-size: 12px; color: #8a8172; margin-bottom: 8px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 12px; padding: 4px 9px; border-radius: 999px; background: #efece2; color: #8a8172; }
+  .pill.on { background: #e3ece0; color: #4a6b41; }
+  .footer { margin-top: 20px; font-size: 13px; color: #8a8172; }
   @media (prefers-color-scheme: dark) {
     body { background: #1b1a17; color: #eee9df; }
     .chip { background: #35301f; color: #d8cba8; }
     .body blockquote { background: #26231b; border-left-color: #6b5f3f; }
-    .footer { color: #9a9280; }
+    .progress { border-color: #3a3626; }
+    .pill { background: #26231b; color: #9a9280; }
+    .pill.on { background: #223420; color: #a9d19d; }
+    .progress-label, .footer { color: #9a9280; }
   }
 </style>
 </head>
@@ -29,7 +37,46 @@
     <div class="body">
       {{BODY_HTML}}
     </div>
-    <div class="footer">POC template — frontier-ai-academy-poc / instructions-template.html</div>
+    <div class="progress" id="progress"></div>
+    <div class="footer">POC template — frontier-ai-academy-poc / instructions-template.html · progress saved only in this browser</div>
   </div>
+  <script>
+    (function () {
+      var ns = 'poc-lesson-{{LESSON_ID}}-{{LANGUAGE}}';
+
+      function read(key) {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
+      }
+      function write(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+      }
+      function pill(label, on) {
+        return '<span class="pill' + (on ? ' on' : '') + '">' + label + '</span>';
+      }
+
+      write(ns + '-viewed', 'true');
+
+      var practiceDone = read(ns + '-done') === 'true';
+      var practiceAnswer = read(ns + '-answer');
+      var hasAnswer = !!(practiceAnswer && practiceAnswer.trim());
+      var feedbackLabel = 'not started';
+      try {
+        var fb = JSON.parse(read(ns + '-feedback') || '{}');
+        var total = Object.keys(fb).length;
+        if (total > 0) {
+          var checked = Object.values(fb).filter(Boolean).length;
+          feedbackLabel = checked + '/' + total;
+        }
+      } catch (e) {}
+
+      document.getElementById('progress').innerHTML =
+        '<div class="progress-label">Your progress (saved in this browser)</div>' +
+        '<div class="pills">' +
+          pill('Instructions ✓', true) +
+          pill('Practice' + (practiceDone ? ' ✓' : hasAnswer ? ' (draft saved)' : ''), practiceDone || hasAnswer) +
+          pill('Feedback ' + feedbackLabel, feedbackLabel !== 'not started') +
+        '</div>';
+    })();
+  </script>
 </body>
 </html>

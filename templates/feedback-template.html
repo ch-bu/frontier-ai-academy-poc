@@ -14,11 +14,19 @@
   .body ol, .body ul { line-height: 1.6; margin: 0 0 14px; padding-left: 20px; }
   .row { display: flex; align-items: flex-start; gap: 8px; margin: 8px 0; font-size: 14px; }
   .status { font-size: 12px; color: #8a8172; margin-top: 10px; min-height: 16px; }
-  .footer { margin-top: 28px; font-size: 13px; color: #8a8172; }
+  .progress { margin-top: 20px; padding: 12px 14px; border: 1px solid #e3ddce; border-radius: 8px; }
+  .progress-label { font-size: 12px; color: #8a8172; margin-bottom: 8px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 12px; padding: 4px 9px; border-radius: 999px; background: #efece2; color: #8a8172; }
+  .pill.on { background: #e3ece0; color: #4a6b41; }
+  .footer { margin-top: 20px; font-size: 13px; color: #8a8172; }
   @media (prefers-color-scheme: dark) {
     body { background: #1b1a17; color: #eee9df; }
     .chip { background: #3a2530; color: #dba9be; }
-    .status, .footer { color: #9a9280; }
+    .progress { border-color: #3a3626; }
+    .pill { background: #26231b; color: #9a9280; }
+    .pill.on { background: #223420; color: #a9d19d; }
+    .status, .progress-label, .footer { color: #9a9280; }
   }
 </style>
 </head>
@@ -31,13 +39,25 @@
     </div>
     <div id="checklist"></div>
     <div class="status" id="status"></div>
+    <div class="progress" id="progress"></div>
     <div class="footer">POC template — frontier-ai-academy-poc / feedback-template.html · saved only in this browser</div>
   </div>
   <script>
     (function () {
-      var key = 'poc-lesson-{{LESSON_ID}}-{{LANGUAGE}}-feedback';
+      var ns = 'poc-lesson-{{LESSON_ID}}-{{LANGUAGE}}';
+      var feedbackKey = ns + '-feedback';
       var checklist = document.getElementById('checklist');
       var status = document.getElementById('status');
+
+      function read(key) {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
+      }
+      function write(key, value) {
+        try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
+      }
+      function pill(label, on) {
+        return '<span class="pill' + (on ? ' on' : '') + '">' + label + '</span>';
+      }
 
       var items = Array.prototype.map.call(
         document.querySelectorAll('.body li'),
@@ -46,8 +66,26 @@
 
       var saved = {};
       try {
-        saved = JSON.parse(localStorage.getItem(key) || '{}');
+        saved = JSON.parse(read(feedbackKey) || '{}');
       } catch (e) {}
+
+      function renderProgress() {
+        var viewed = read(ns + '-viewed') === 'true';
+        var practiceDone = read(ns + '-done') === 'true';
+        var practiceAnswer = read(ns + '-answer');
+        var hasAnswer = !!(practiceAnswer && practiceAnswer.trim());
+        var total = items.length;
+        var checked = Object.values(saved).filter(Boolean).length;
+        var feedbackLabel = total > 0 ? checked + '/' + total : 'not started';
+
+        document.getElementById('progress').innerHTML =
+          '<div class="progress-label">Your progress (saved in this browser)</div>' +
+          '<div class="pills">' +
+            pill('Instructions' + (viewed ? ' ✓' : ''), viewed) +
+            pill('Practice' + (practiceDone ? ' ✓' : hasAnswer ? ' (draft saved)' : ''), practiceDone || hasAnswer) +
+            pill('Feedback ' + feedbackLabel, checked > 0) +
+          '</div>';
+      }
 
       items.forEach(function (text, i) {
         var row = document.createElement('label');
@@ -57,12 +95,9 @@
         box.checked = !!saved[i];
         box.addEventListener('change', function () {
           saved[i] = box.checked;
-          try {
-            localStorage.setItem(key, JSON.stringify(saved));
-            status.textContent = 'Saved locally in this browser.';
-          } catch (e) {
-            status.textContent = 'Could not save locally (storage unavailable).';
-          }
+          var ok = write(feedbackKey, JSON.stringify(saved));
+          status.textContent = ok ? 'Saved locally in this browser.' : 'Could not save locally (storage unavailable).';
+          renderProgress();
         });
         var span = document.createElement('span');
         span.textContent = 'I met this: ' + text;
@@ -70,6 +105,8 @@
         row.appendChild(span);
         checklist.appendChild(row);
       });
+
+      renderProgress();
     })();
   </script>
 </body>

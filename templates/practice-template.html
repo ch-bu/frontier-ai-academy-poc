@@ -16,13 +16,21 @@
              border: 1px solid #d8d2c2; resize: vertical; background: #fff; color: inherit; }
   .row { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 14px; }
   .status { font-size: 12px; color: #8a8172; margin-top: 6px; min-height: 16px; }
-  .footer { margin-top: 28px; font-size: 13px; color: #8a8172; }
+  .progress { margin-top: 20px; padding: 12px 14px; border: 1px solid #e3ddce; border-radius: 8px; }
+  .progress-label { font-size: 12px; color: #8a8172; margin-bottom: 8px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: 12px; padding: 4px 9px; border-radius: 999px; background: #efece2; color: #8a8172; }
+  .pill.on { background: #e3ece0; color: #4a6b41; }
+  .footer { margin-top: 20px; font-size: 13px; color: #8a8172; }
   @media (prefers-color-scheme: dark) {
     body { background: #1b1a17; color: #eee9df; }
     .chip { background: #223420; color: #a9d19d; }
     .body blockquote { background: #26231b; border-left-color: #6b5f3f; }
     textarea { background: #24221c; border-color: #45412f; color: #eee9df; }
-    .status, .footer { color: #9a9280; }
+    .progress { border-color: #3a3626; }
+    .pill { background: #26231b; color: #9a9280; }
+    .pill.on { background: #223420; color: #a9d19d; }
+    .status, .progress-label, .footer { color: #9a9280; }
   }
 </style>
 </head>
@@ -39,30 +47,59 @@
       <span>Mark practice as done</span>
     </label>
     <div class="status" id="status"></div>
+    <div class="progress" id="progress"></div>
     <div class="footer">POC template — frontier-ai-academy-poc / practice-template.html · saved only in this browser</div>
   </div>
   <script>
     (function () {
-      var key = 'poc-lesson-{{LESSON_ID}}-{{LANGUAGE}}';
-      var answerKey = key + '-answer';
-      var doneKey = key + '-done';
+      var ns = 'poc-lesson-{{LESSON_ID}}-{{LANGUAGE}}';
+      var answerKey = ns + '-answer';
+      var doneKey = ns + '-done';
       var answer = document.getElementById('answer');
       var done = document.getElementById('done');
       var status = document.getElementById('status');
 
-      try {
-        answer.value = localStorage.getItem(answerKey) || '';
-        done.checked = localStorage.getItem(doneKey) === 'true';
-      } catch (e) {}
+      function read(key) {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
+      }
+      function write(key, value) {
+        try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
+      }
+      function pill(label, on) {
+        return '<span class="pill' + (on ? ' on' : '') + '">' + label + '</span>';
+      }
+
+      function renderProgress() {
+        var viewed = read(ns + '-viewed') === 'true';
+        var practiceDone = done.checked;
+        var hasAnswer = !!(answer.value && answer.value.trim());
+        var feedbackLabel = 'not started';
+        try {
+          var fb = JSON.parse(read(ns + '-feedback') || '{}');
+          var total = Object.keys(fb).length;
+          if (total > 0) {
+            var checked = Object.values(fb).filter(Boolean).length;
+            feedbackLabel = checked + '/' + total;
+          }
+        } catch (e) {}
+
+        document.getElementById('progress').innerHTML =
+          '<div class="progress-label">Your progress (saved in this browser)</div>' +
+          '<div class="pills">' +
+            pill('Instructions' + (viewed ? ' ✓' : ''), viewed) +
+            pill('Practice' + (practiceDone ? ' ✓' : hasAnswer ? ' (draft saved)' : ''), practiceDone || hasAnswer) +
+            pill('Feedback ' + feedbackLabel, feedbackLabel !== 'not started') +
+          '</div>';
+      }
+
+      answer.value = read(answerKey) || '';
+      done.checked = read(doneKey) === 'true';
+      renderProgress();
 
       function save() {
-        try {
-          localStorage.setItem(answerKey, answer.value);
-          localStorage.setItem(doneKey, String(done.checked));
-          status.textContent = 'Saved locally in this browser.';
-        } catch (e) {
-          status.textContent = 'Could not save locally (storage unavailable).';
-        }
+        var ok = write(answerKey, answer.value) && write(doneKey, String(done.checked));
+        status.textContent = ok ? 'Saved locally in this browser.' : 'Could not save locally (storage unavailable).';
+        renderProgress();
       }
 
       answer.addEventListener('input', save);

@@ -18,6 +18,15 @@ predates) — these are intentionally plain.
 | `{{LANGUAGE}}` | `en` or `de` |
 | `{{BODY_HTML}}` | The relevant markdown section, converted to simple HTML |
 
-`practice-template.html` and `feedback-template.html` persist learner input to
-`localStorage` only, under a key namespaced by `{{LESSON_ID}}` and `{{LANGUAGE}}` —
-nothing is sent anywhere.
+All three templates read and write `localStorage` only, under keys namespaced by
+`{{LESSON_ID}}` and `{{LANGUAGE}}` — nothing is sent anywhere:
+
+- `instructions-template.html` sets `...-viewed` when opened.
+- `practice-template.html` saves `...-answer` and `...-done`.
+- `feedback-template.html` saves `...-feedback` (a JSON map of which self-check items
+  are ticked).
+
+Each template also renders a small "Your progress" strip built from those same three
+keys, so the learner can see — inside the artifact itself — that their instructions,
+practice, and feedback state is being kept, without needing to open browser developer
+tools.
